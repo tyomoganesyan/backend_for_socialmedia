@@ -7,9 +7,8 @@ const postSchema = new mongoose.Schema({
         trim: true
     },
     image: {
-        type: String,
-        trim: true,
-        default: '',
+        cdn_url: String,
+        photos_id: mongoose.Schema.Types.ObjectId
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,10 +19,10 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     }],
-    comments: {
+    comments: [{
         type: String,
         ref: 'comments'
-    },
+    }],
     created: {
         type: Date,
         default: Date.now

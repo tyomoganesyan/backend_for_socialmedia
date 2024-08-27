@@ -1,5 +1,5 @@
 const postsModel = require('../models/posts')
-
+const usersModel = require('../models/users')
 
 class PostsService {
     static async getPosts() {
@@ -29,6 +29,11 @@ class PostsService {
         try {
             const p = new postsModel(user);
             const addedPost = await p.save();
+            await usersModel.findByIdAndUpdate(
+                user.author,
+                { $push: { posts: addedPost._id } },
+                { new: true }
+            )
             return addedPost;
         }
         catch (error) {

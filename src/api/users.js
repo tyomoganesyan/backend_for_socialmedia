@@ -33,6 +33,20 @@ usersRouter.patch('/:id', async (req, res) => {
     catch (error) {
         res.status(400).json({ message: error.message });
     }
+});
+
+usersRouter.patch('/follow/:id', async (req, res) => {
+    if (!req.body.userId) {
+        return res.status(400).json({ message: "userId required" });
+    };
+    try {
+        const followedUser = await UsersService.followUserById(req.params.id, req.body.userId)
+        res.status(200).json({ followedUser });
+    }
+    catch (error) {
+        res.status(400).json({ message: error.message })
+    }
+
 })
 
 usersRouter.delete('/:id', async (req, res) => {

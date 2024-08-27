@@ -6,7 +6,7 @@ const SECRET = process.env.SECRET
 
 
 registerRouter.post('/', async (req, res) => {
-    const { user } = req.body;
+    const user = req.body;
     if (!user) {
         return res.status(400).json({ message: "user is not defined" });
     }
@@ -21,7 +21,7 @@ registerRouter.post('/', async (req, res) => {
         })
     }
     catch (error) {
-        console.log(error,134141)
+        console.log(error, 134141)
         res.status(400).json({ message: error.message });
     }
 });

@@ -12,8 +12,7 @@ class UsersService {
             return user;
         }
         catch (err) {
-            console.log(err);
-            throw new Error('Something went wrong...');
+            throw new Error(err);
         }
     }
 
@@ -50,6 +49,31 @@ class UsersService {
                 { new: true }
             );
             return updatedUser;
+        }
+        catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    static async followUserById(id, newFollowerId) {
+        if (!id) {
+            throw new Error('id required');
+        }
+        try {
+            const foundFollowing = await usersModel.find({ following: { $in: newFollowerId } })
+            if (foundFollowing[0]) {
+                throw new Error("you already follow this user");
+            }
+            const user = await usersModel.findByIdAndUpdate(
+                id,
+                { $push: { following: newFollowerId } },
+                { new: true }
+            );
+            const secondUser = await usersModel.findByIdAndUpdate(
+                newFollowerId,
+                { $push: { followers: id } }
+            )
+            return user;
         }
         catch (error) {
             throw new Error(error);

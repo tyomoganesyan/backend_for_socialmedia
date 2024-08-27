@@ -9,13 +9,15 @@ const feedRouter = require('./src/api/feed');
 const body_parser = require('body-parser');
 const registerRouter = require('./src/api/register');
 const loginRouter = require('./src/api/login');
-const auth = require('./src/core/auth')
+const auth = require('./src/core/auth');
+const cdnRouter = require('./src/api/cdn');
 
 app.use(body_parser.json());
 app.use('/users', auth, usersRouter);
 app.use('/posts', auth, postsRouter);
 app.use('/comments', auth, commentsRouter);
 app.use('/feed', auth, feedRouter);
+app.use('/cdn', cdnRouter)
 app.use('/login', loginRouter);
 app.use('/register', registerRouter)
 

@@ -1,8 +1,11 @@
 const express = require('express')
+const PORT = process.env.PORT
 const PostsService = require('../services/posts')
+const UsersService = require('../services/users')
 const postsRouter = express.Router()
+const photoModel = require('../models/photo')
 const multer = require('multer')
-const upload = multer({ dest: "public/uploads" })
+
 
 postsRouter.get('/', async (req, res) => {
     try {
@@ -24,17 +27,43 @@ postsRouter.get('/:id', async (req, res) => {
     }
 })
 
-postsRouter.post('/', upload.single('image'), async (req, res) => {
-    const post = req.body
-    post.image = req.file.path + ".png"
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+postsRouter.post('/', upload.single('photo'), async (req, res) => {
     try {
+        try {
+            const user = await UsersService.getUserById(req.body.author)
+            if (!user) {
+                return res.status(400).json({ message: "No such user" });
+            }
+        }
+
+        catch (error) {
+            return res.status(400).json({ message: error.message })
+        }
+
+        const photo = new photoModel({
+            data: req.file.buffer,
+            contentType: req.file.mimetype
+        });
+
+        const savedPhoto = await photo.save();
+        const post = {
+            image: {
+                cdn_url: "http://localhost:" + PORT + "/cdn/:photo_id",
+                photos_id: savedPhoto._id
+            },
+            content: req.body.content,
+            author: req.body.author,
+        }
         const addedPost = await PostsService.addPost(post)
-        res.status(200).json({ addedPost })
+        res.status(201).json({ addedPost });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-    catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-})
+});
 
 postsRouter.patch('/:id', async (req, res) => {
     if (!req.body.updateData) {
