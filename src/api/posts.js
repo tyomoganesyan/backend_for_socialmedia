@@ -3,8 +3,10 @@ const PORT = process.env.PORT
 const PostsService = require('../services/posts')
 const UsersService = require('../services/users')
 const postsRouter = express.Router()
-const photoModel = require('../models/photo')
+const photoModel = require('../models/photos')
 const multer = require('multer')
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 
 postsRouter.get('/', async (req, res) => {
@@ -27,8 +29,6 @@ postsRouter.get('/:id', async (req, res) => {
     }
 })
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 postsRouter.post('/', upload.single('photo'), async (req, res) => {
     try {

@@ -2,6 +2,7 @@ const express = require('express')
 const UsersService = require('../services/users')
 const usersRouter = express.Router()
 const authRouter = require('../core/auth')
+const FeedService = require('../services/feed')
 usersRouter.use(authRouter)
 
 
@@ -40,7 +41,8 @@ usersRouter.patch('/follow/:id', async (req, res) => {
         return res.status(400).json({ message: "userId required" });
     };
     try {
-        const followedUser = await UsersService.followUserById(req.params.id, req.body.userId)
+        await FeedService.createFeedById(req.params.id);
+        const followedUser = await UsersService.followUserById(req.params.id, req.body.userId);
         res.status(200).json({ followedUser });
     }
     catch (error) {

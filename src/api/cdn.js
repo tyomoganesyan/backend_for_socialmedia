@@ -1,6 +1,6 @@
 const express = require('express')
 const cdnRouter = express.Router()
-const photoModel = require('../models/photo')
+const photoModel = require('../models/photos')
 
 cdnRouter.get('/:photo_id', async (req, res) => {
     try {

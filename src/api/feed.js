@@ -4,8 +4,9 @@ const feedRouter = express.Router();
 
 
 feedRouter.get('/:id', async (req, res) => {
-    const result = await FeedService.getFeedById(req.params.id);
-    return res.status(200).json({ result });
+    const { id } = req.params;
+    const feed = await FeedService.getFeedById(id);
+    return res.status(200).json({ feed });
 })
 
 
